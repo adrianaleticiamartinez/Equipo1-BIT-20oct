@@ -1,4 +1,4 @@
-var clientecontroller = require("../controllers/TareaController");
+var clientecontroller = require("../controllers/ClienteController");
 var express = require("express");
 var auth = require('../middlewares/autorizacion');
 var router = express.Router();
