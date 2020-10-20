@@ -10,7 +10,7 @@ var jwt = require('../helpers/jwt');
 //login
 function login(req, res) {
     var data = req.body;
-
+    console.log(User.findOne({}));
     User.findOne({ usuario: data.usuario }, (err, user_data) => {
 
         if (err) {

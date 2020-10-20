@@ -6,12 +6,15 @@ var Cliente = require("../models/cliente");
 
 //obtener cliente por idcliente
 async function getById(req, res) {
-    var clientes = await Cliente.find({ idCliente: req.params['id'] });
+    var clientes = await Cliente.find({ idCliente: req.params['id'] }).limit(1000);
     if(req.perfil == 'Restringido'){
-        var datos = datosRestringidos(clientes);
+        var datos = await datosRestringidos(clientes);
     }
     if(req.perfil == 'Validador'){
-        var datos = datosValidador(clientes);
+        var datos = await datosValidador(clientes);
+    } 
+      if(req.perfil == 'Manager'){
+        var datos = clientes;
     }
     
     try {
@@ -23,14 +26,21 @@ async function getById(req, res) {
 }
 //obtener todos los clientes
 async function getAll(req, res) {
+    var clientes = await Cliente.find({  }).limit(1000);
 
+    
     if(req.perfil == 'Restringido'){
-        var datos = datosRestringidos(clientes);
+        console.log("restringido");
+        var datos = await datosRestringidos(clientes);
     }
     if(req.perfil == 'Validador'){
-        var datos = datosValidador(clientes);
+        console.log("validador");
+        var datos = await datosValidador(clientes);
     }
-    var clientes = await Cliente.find({  });
+    if(req.perfil == 'Manager'){
+        var datos = clientes;
+    }
+    
     try {
         res.status(200).send({ clientes: datos });
     } catch (err) {
@@ -42,14 +52,17 @@ async function getAll(req, res) {
 
 //obtener clientes dependiendo a querys
 async function getByQuery(req, res) {
+    var clientes = await Cliente.find( req.query).limit(1000);
     if(req.perfil == 'Restringido'){
-        var datos = datosRestringidos(clientes);
+        var datos = await datosRestringidos(clientes);
     }
     if(req.perfil == 'Validador'){
-        var datos = datosValidador(clientes);
+        var datos = await datosValidador(clientes);
+    }
+    if(req.perfil == 'Manager'){
+        var datos = clientes;
     }
 
-    var clientes = await Cliente.find( req.query);
     try {
         res.status(200).send({ tarea: datos });
     } catch (err) {
@@ -62,36 +75,38 @@ async function datosValidador(datos){
     return datos.filter(dato => {
         asterisco = ''.padStart(dato.apellidoPaterno.length -1,'*')
         dato.apellidoPaterno = dato.apellidoPaterno.substr(0,2);
-        dato.apellidoPaterno =+ asterisco;
+        dato.apellidoPaterno = dato.apellidoPaterno+ ""+asterisco;
+    
 
 
-        asterisco = ''.padStart(dato.apellidoMaterno.length -1,'*')
+        asterisco1 = ''.padStart(dato.apellidoMaterno.length -1,'*')
         dato.apellidoMaterno = dato.apellidoMaterno.substr(0,2);
-        dato.apellidoMaterno =+ asterisco;
+        dato.apellidoMaterno =dato.apellidoMaterno+ ""+asterisco1;
 
-        asterisco = ''.padStart(dato.fechaNacimiento.length -1,'*')
+        asterisco2 = ''.padStart(dato.fechaNacimiento.length -1,'*')
         dato.fechaNacimiento = dato.fechaNacimiento.substr(0,2);
-        dato.fechaNacimiento =+ asterisco;
+        dato.fechaNacimiento =dato.fechaNacimiento+ ""+asterisco2;
+      
 
-        asterisco = ''.padStart(dato.nacionalidad.length -1,'*')
+        asterisco3 = ''.padStart(dato.nacionalidad.length -1,'*')
         dato.nacionalidad = dato.nacionalidad.substr(0,2);
-        dato.nacionalidad =+ asterisco;
+        dato.nacionalidad =dato.nacionalidad+ ""+asterisco3;
+   
 
-        asterisco = ''.padStart(dato.rfc.length -1,'*')
+        asterisco4 = ''.padStart(dato.rfc.length -1,'*')
         dato.rfc = dato.rfc.substr(0,2);
-        dato.rfc =+ asterisco;
+        dato.rfc =dato.rfc+ ""+asterisco4;
 
-        asterisco = ''.padStart(dato.numeroID.length -1,'*')
+        asterisco5 = ''.padStart(dato.numeroID.length -1,'*')
         dato.numeroID = dato.numeroID.substr(0,2);
-        dato.numeroID =+ asterisco;
+        dato.numeroID = dato.numeroID+ ""+asterisco5;
 
-        asterisco = ''.padStart(dato.email.length -1,'*')
+        asterisco6 = ''.padStart(dato.email.length -1,'*')
         dato.email = dato.email.substr(0,2);
-        dato.email =+ asterisco;
+        dato.email =dato.email+ ""+asterisco6;
 
-        asterisco = ''.padStart(dato.email.length -1,'*')
-        dato.email = dato.email.substr(0,2);
-        dato.email =+ asterisco;
+
+     
 
         return dato;
      
@@ -106,19 +121,22 @@ async function datosValidador(datos){
 
 
 function datosRestringidos(datos){
-    return datos.filter(dato => {
-        delete dato.apellidoPaterno;
-        delete dato.apellidoMaterno;
-        delete dato.fechaNacimiento;
-        delete dato.nacionalidad;
-        delete dato.rfc;
-        delete dato.numeroID;
-        delete dato.email;
-        delete dato.tipoID;
-    
+    var datos = datos.filter(dato => {
+         dato.apellidoPaterno ="";
+         dato.apellidoMaterno ="";
+         dato.fechaNacimiento="";
+         dato.nacionalidad="";
+         dato.rfc="";
+         dato.numeroID="";
+         dato.email="";
+         dato.tipoID="";
+  
         return dato;
 
     });
+
+  
+    return datos;
    
 }
 
