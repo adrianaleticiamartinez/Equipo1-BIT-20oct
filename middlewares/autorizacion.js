@@ -8,7 +8,7 @@ exports.ensureAuthenticated = function (req, res, next) {
             .status(403)
             .send({ message: "Tu petición no tiene cabecera de autorización" });
     }
-
+    
     var token = req.headers.authorization.split(" ")[1];
     var payload = jwt.decode(token, secret);
 
@@ -17,7 +17,6 @@ exports.ensureAuthenticated = function (req, res, next) {
             .status(401)
             .send({ message: "El token ha expirado" });
     }
-
     req.user = payload.sub;
     next();
 }
