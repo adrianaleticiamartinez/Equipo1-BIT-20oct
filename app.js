@@ -1,7 +1,10 @@
+
 var express = require("express");
 var bodyparser = require("body-parser");
 var mongoose = require("mongoose");
 var compression = require("compression");
+var cliente_routes = require('./routes/cliente');
+var user_routes = require('./routes/user');
 
 var port = process.env.PORT || 4204;
 var app = express();
@@ -39,5 +42,9 @@ mongoose.connect(
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.use(compression());
+
+
+app.use('/api/cliente', cliente_routes);
+app.use('/api/user', user_routes);
 
 module.exports = app;
